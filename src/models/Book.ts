@@ -1,6 +1,6 @@
 
-import { Schema } from "mongoose";
-import mongoose from "mongoose";
+import { model, Schema } from "mongoose";
+
 
 // FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY.
 export enum Genre {
@@ -57,7 +57,11 @@ const BookSchema = new Schema <IBook>({
     type: Boolean,
     default: true
   }
-});
+} , {
+  timestamps: true,
+  versionKey: false 
+}
+);
 
 BookSchema.methods.updateAvailability = function () {
   this.available = this.copies > 0;
@@ -69,6 +73,6 @@ BookSchema.pre('save', function (next) {
 });
 
 
-const Book = mongoose.model("Book", BookSchema);
+const Book = model<IBook>("Book", BookSchema);
 
 export default Book;
