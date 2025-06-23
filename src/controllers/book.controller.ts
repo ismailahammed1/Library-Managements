@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Book from "../models/Book";
+import { log } from "console";
 
 const createBook = async (req: Request, res: Response) => {
   try {
@@ -17,29 +18,94 @@ const createBook = async (req: Request, res: Response) => {
 };
 const getAllBooks = async (req: Request, res: Response) => {
   try {
-    const { filter, sortBy = 'createdAt', sort = 'desc', limit = '10' } = req.query;
+    const {
+      filter,
+      sortBy = "createdAt",
+      sort = "desc",
+      limit = "10",
+    } = req.query;
 
     const query = filter ? { genre: filter } : {};
-    const sortOrder = sort === 'asc' ? 1 : -1;
+    const sortOrder = sort === "asc" ? 1 : -1;
     const books = await Book.find(query)
       .sort({ [sortBy as string]: sortOrder })
       .limit(parseInt(limit as string))
-      .select('-__v');
 
     res.json({
       success: true,
-      message: 'Books retrieved successfully',
-      data: books
+      message: "Books retrieved successfully",
+      data: books,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to retrieve books',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      message: "Failed to retrieve books",
+      error: error instanceof Error ? error.message : "Unknown error",
     });
   }
 };
-const getBookById = async (req: Request, res: Response) => {};
-const updateBook = async (req: Request, res: Response) => {};
-const deleteBook = async (req: Request, res: Response) => {};
-export { createBook, getAllBooks, getBookById, updateBook, deleteBook };
+
+const getABookId = async (req: Request, res: Response) => {
+  try {
+    const { bookId } = req.params;
+    const book = await Book.findById(bookId);
+    
+    res.json({
+      success: true,
+      message: "Book retrieved successfully", 
+      data: book,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve book",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};
+
+
+
+const updateBook = async (req: Request, res: Response) => {
+  try {
+     const bookId  = req.params.bookId;
+    // console.log("Book ID:", bookId);
+     const updateBookData=req.body;
+// console.log("Headers:", req.headers);
+// console.log("Raw Body:", req.body);
+
+     
+    const book = await Book.findByIdAndUpdate(bookId,updateBookData,{new: true, runValidators: true});
+    res.status(200).json({
+      super: true,
+      message: "Book updated successfully", 
+      data: book,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update book",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+}
+
+const deleteBook = async (req: Request, res: Response) => {
+try {
+   const  deleteBookData=req.params.bookId;
+  const book=await Book.findByIdAndDelete(deleteBookData);
+ 
+    res.status(200).json({
+  "success": true,
+  "message": "Book deleted successfully",
+  "data": null
+    }); 
+} catch (error) {
+  res.status(500).json({
+    success: false,
+    message: "Failed to delete book",
+    error: error instanceof Error ? error.message : "Unknown error",
+  });
+} 
+};
+export { createBook, getAllBooks, getABookId, updateBook, deleteBook };
