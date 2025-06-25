@@ -16,6 +16,7 @@ const createBook = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error creating book.", error });
   }
 };
+
 const getAllBooks = async (req: Request, res: Response) => {
   try {
     const {
@@ -71,8 +72,6 @@ const updateBook = async (req: Request, res: Response) => {
      const bookId  = req.params.bookId;
 
      const updateBookData=req.body;
-
-
      
     const book = await Book.findByIdAndUpdate(bookId,updateBookData,{new: true, runValidators: true});
     res.status(200).json({
@@ -91,7 +90,7 @@ const updateBook = async (req: Request, res: Response) => {
 
 const deleteBook = async (req: Request, res: Response) => {
 try {
-   const  deleteBookData=req.params.bookId;
+ const  deleteBookData=req.params.bookId;
   const book=await Book.findByIdAndDelete(deleteBookData);
  
     res.status(200).json({

@@ -18,13 +18,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/library-Management';
-let server;
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield mongoose_1.default.connect(MONGO_URI);
-            server = app_1.default.listen(PORT, () => {
-                console.log("hei mongoose", PORT);
+            app_1.default.listen(PORT, () => {
+                console.log(`Listening on port ${PORT}`);
             });
         }
         catch (error) {
