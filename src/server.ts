@@ -8,17 +8,15 @@ dotenv.config();
 const PORT = process.env.PORT;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/library-Management';
 
-let server: Server;
 async function main() {
   try {
     await mongoose.connect(MONGO_URI);
-    server = app.listen(PORT, () => {
-    console.log("hei mongoose", PORT);
+    app.listen(PORT, () => {
+      console.log(`Listening on port ${PORT}`);
     });
   } catch (error) {
     console.error(error);
   }
 }
-
 main();
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Book from "../models/Book";
-import { log } from "console";
+
 
 const createBook = async (req: Request, res: Response) => {
   try {
@@ -69,10 +69,9 @@ const getABookId = async (req: Request, res: Response) => {
 const updateBook = async (req: Request, res: Response) => {
   try {
      const bookId  = req.params.bookId;
-    // console.log("Book ID:", bookId);
+
      const updateBookData=req.body;
-// console.log("Headers:", req.headers);
-// console.log("Raw Body:", req.body);
+
 
      
     const book = await Book.findByIdAndUpdate(bookId,updateBookData,{new: true, runValidators: true});
