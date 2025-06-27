@@ -11,5 +11,5 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/api/books', book_routes_1.default);
-app.use('/api/borrows', borrow_routes_1.default);
+app.use('/api/borrow', borrow_routes_1.default);
 exports.default = app;
