@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 app.use('/api/books', bookRoutes);
-app.use('/api/borrows', borrowRoutes);
+app.use('/api/borrow', borrowRoutes);
 
 
 
