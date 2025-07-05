@@ -56,47 +56,46 @@ const borrowbook = async (req: Request, res: Response) => {
 
 const getBorrowedBooks = async (req: Request, res: Response) => {
   try {
-    const getBookBorrows = await Borrow.aggregate([
-      {
-        $group: {
-          _id: '$book',
-          totalQuantity: { $sum: '$quantity' }
-        }
-      },
+    const borrows = await Borrow.aggregate([
       {
         $lookup: {
-          from: 'books',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'bookInfo'
+          from: "books", // the MongoDB collection name (should match your Book model collection)
+          localField: "book",
+          foreignField: "_id",
+          as: "bookInfo"
         }
       },
       {
-        $unwind: '$bookInfo'
+        $unwind: "$bookInfo"
       },
       {
         $project: {
-          _id: 0,
-          book: {
-            title: '$bookInfo.title',
-            isbn: '$bookInfo.isbn'
-          },
+          _id: 1,
+          quantity: 1,
+          dueDate: 1,
           totalQuantity: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          book: {
+            _id: "$bookInfo._id",
+            title: "$bookInfo.title",
+            isbn: "$bookInfo.isbn",
+            bookImage: "$bookInfo.bookImage"
+          }
         }
       }
     ]);
 
     res.status(200).json({
       success: true,
-      message: 'Borrowed books summary retrieved successfully',
-      data: getBookBorrows
+      message: "Borrowed books retrieved successfully",
+      data: borrows
     });
-
   } catch (error) {
+    console.error("Error retrieving borrows:", error);
     res.status(500).json({
       success: false,
-      message: 'Error retrieving borrowed books summary',
-      error
+      message: "Failed to retrieve borrowed books"
     });
   }
 };
